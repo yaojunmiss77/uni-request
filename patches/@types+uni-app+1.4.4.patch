@@ -1,0 +1,24 @@
+diff --git a/node_modules/@types/uni-app/lib/uni.d.ts b/node_modules/@types/uni-app/lib/uni.d.ts
+index aa1496c..14b3dd8 100755
+--- a/node_modules/@types/uni-app/lib/uni.d.ts
++++ b/node_modules/@types/uni-app/lib/uni.d.ts
+@@ -4,6 +4,19 @@
+ declare const uni: Uni;
+ 
+ declare class Uni {
++    /**
++   * 向客户端发送事件，H5中会自动通过条件编译排除
++   * @param eventName 事件名称
++   * @param params 发送参数
++   * @param callback 回调
++  * @returns
++   */
++    sendNativeEvent: (eventName: string, params: Record<string, any>, callback: (result: any) => void) => void;
++    /**
++     * 小程序监听事件
++     */
++    onNativeEventReceive:(callback:(event:string,data:any)=>void)=>void;
++    onError:(callback:any)=>void;
+     /**
+      * 将 Base64 字符串转成 ArrayBuffer 对象
+      *
