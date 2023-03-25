@@ -164,7 +164,6 @@ class UniRequest {
   public put(url: string, data = {}, header?: Record<string, string>) {
     return this.request({ url, data, header, method: 'PUT' });
   }
-  public uploadFile() {}
 }
 
 export default UniRequest;
