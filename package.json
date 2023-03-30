@@ -12,7 +12,6 @@
     "dev": "rimraf dist typings && tsc --emitDeclarationOnly && cross-env NODE_ENV=development rollup -c --watch",
     "build": "rimraf dist typings && tsc --emitDeclarationOnly && cross-env NODE_ENV=production rollup -c",
     "prepublish": "npm run build",
-    "postinstall": "patch-package",
     "c": "git-cz"
   },
   "author": "yaojun",
