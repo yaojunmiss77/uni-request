@@ -1,6 +1,6 @@
 export interface IParams {
   /** baseUrl，代理的path也需要填入，比如https://hostname/proxy/ */
-  baseUrl: string;
+  baseUrl?: string;
   /** 公共错误处理函数 */
   onErrorHandler?: (error: any) => void;
   /** 公共请求头 */
@@ -12,7 +12,7 @@ export interface IParams {
   /** 请求尝试延迟时间 */
   retryDelay?: number;
   /** token */
-  token: string;
+  token?: string;
   /** 向APP得到token的event事件名称，默认getToken */
   tokenEventName?: string;
 }
@@ -74,14 +74,14 @@ class UniRequest {
       });
     }
   }
-  public request(
+  public request<T>(
     params: {
       url: string;
       method: RequestOptions['method'];
       data?: RequestOptions['data'];
       header?: RequestOptions['header'];
     } & RequestOptions,
-  ) {
+  ): Promise<T> {
     const url = `${this.baseUrl}${params.url}?t=${Date.now()}`;
     const header = {
       ...this.header,
@@ -152,17 +152,17 @@ class UniRequest {
    * @param header
    * @returns
    */
-  public post(url: string, data = {}, header?: Record<string, string>) {
-    return this.request({ url, data, header, method: 'POST' });
+  public post<T>(url: string, data = {}, header?: Record<string, string>) {
+    return this.request<T>({ url, data, header, method: 'POST' });
   }
-  public get(url: string, data = {}, header?: Record<string, string>) {
-    return this.request({ url, data, header, method: 'GET' });
+  public get<T>(url: string, data = {}, header?: Record<string, string>) {
+    return this.request<T>({ url, data, header, method: 'GET' });
   }
-  public delete(url: string, data = {}, header?: Record<string, string>) {
-    return this.request({ url, data, header, method: 'DELETE' });
+  public delete<T>(url: string, data = {}, header?: Record<string, string>) {
+    return this.request<T>({ url, data, header, method: 'DELETE' });
   }
-  public put(url: string, data = {}, header?: Record<string, string>) {
-    return this.request({ url, data, header, method: 'PUT' });
+  public put<T>(url: string, data = {}, header?: Record<string, string>) {
+    return this.request<T>({ url, data, header, method: 'PUT' });
   }
 }
 
