@@ -5,13 +5,13 @@ export interface IParams {
   onErrorHandler?: (error: any) => void;
   /** 公共请求头 */
   header?: Record<string, string>;
-  /** 请求尝试次数 */
+  /** 请求尝试次数，默认3次 */
   maxRetryCount?: number;
-  /** 请求超时时间 */
+  /** 请求超时时间默认10s，ms为单位 */
   timeout?: number;
-  /** 请求尝试延迟时间 */
+  /** 请求尝试延迟时间默认1s，ms为单位 */
   retryDelay?: number;
-  /** token */
+  /** token，APP初始化给到小程序的token */
   token?: string;
   /** 向APP得到token的event事件名称，默认getToken */
   tokenEventName?: string;
