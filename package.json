@@ -1,6 +1,6 @@
 {
   "name": "uniapp-request-sdk",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "用于uniapp小程序的请求库的sdk",
   "main": "dist/index.umd.mini.js",
   "typings": "dist/index.d.ts",
