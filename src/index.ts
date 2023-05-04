@@ -110,7 +110,7 @@ class UniRequest {
                   delayRetryFcuntion();
                 })
                 .catch(() => {
-                  if (this.maxRetryCount >= retryCount) {
+                  if (this.maxRetryCount > retryCount) {
                     delayRetryFcuntion();
                   } else {
                     this.rejectHandler(rej, resData);
@@ -121,7 +121,7 @@ class UniRequest {
               this.rejectHandler(rej, resData);
               // #endif
             } else {
-              if (this.maxRetryCount >= retryCount) {
+              if (this.maxRetryCount > retryCount) {
                 delayRetryFcuntion();
               } else {
                 this.rejectHandler(rej, resData);
@@ -129,7 +129,7 @@ class UniRequest {
             }
           })
           .catch((rejData) => {
-            if (this.maxRetryCount >= retryCount) {
+            if (this.maxRetryCount > retryCount) {
               delayRetryFcuntion();
             } else {
               this.rejectHandler(rej, rejData);
