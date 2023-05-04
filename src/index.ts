@@ -13,7 +13,7 @@ export interface IParams {
   retryDelay?: number;
   /** token，APP初始化给到小程序的token */
   token?: string;
-  /** 向APP得到token的event事件名称，默认getToken */
+  /** 向APP得到token的event事件名称，默认getLoginInfo */
   tokenEventName?: string;
 }
 
@@ -30,9 +30,9 @@ function requestPromise(options?: RequestOptions & { timeout: number }): Promise
 function getToken(eventName: string): Promise<string> {
   return new Promise((res, rej) => {
     const timeout = setTimeout(rej, 5000);
-    uni.sendNativeEvent(eventName, {}, (token: string) => {
+    uni.sendNativeEvent(eventName, {}, (resData: any) => {
       clearTimeout(timeout);
-      res(token);
+      res(resData?.token);
     });
   });
 }
@@ -51,7 +51,7 @@ class UniRequest {
   private timeout = 10000;
   private retryDelay = 1000;
   private token?: string;
-  private tokenEventName = 'getToken';
+  private tokenEventName = 'getLoginInfo';
   constructor(params?: IParams) {
     if (params) {
       Object.keys(params).forEach((key) => {
@@ -97,7 +97,7 @@ class UniRequest {
             const { statusCode, data } = resData as any;
             if (statusCode === 200) {
               if (!data.errno) {
-                res(data.data);
+                res(data.data as T);
               } else {
                 this.rejectHandler(rej, resData);
               }
