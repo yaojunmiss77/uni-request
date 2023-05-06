@@ -71,6 +71,7 @@ export default [
       }),
       resolve(['.js', '.ts', '.tsx']),
       commonjs(),
+      terser(),
     ].filter(Boolean),
     external: ['rxjs'],
   },

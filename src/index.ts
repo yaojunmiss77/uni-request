@@ -82,7 +82,7 @@ class UniRequest {
       header?: RequestOptions['header'];
     } & RequestOptions,
   ): Promise<T> {
-    const url = `${this.baseUrl}${params.url}?t=${Date.now()}`;
+    const url = `${this.baseUrl.replace(/\/$/, '')}/${params.url.replace(/^\//, '')}?t=${Date.now()}`;
     const header = {
       ...this.header,
       ...params.header,
