@@ -9,7 +9,7 @@ export interface IParams {
   maxRetryCount?: number;
   /** 请求超时时间默认10s，ms为单位 */
   timeout?: number;
-  /** 请求尝试延迟时间默认1s，ms为单位 */
+  /** 请求尝试延迟时间默认3s，ms为单位 */
   retryDelay?: number;
   /** token，APP初始化给到小程序的token */
   token?: string;
@@ -49,7 +49,7 @@ class UniRequest {
   private maxRetryCount = 3;
   /** 超时时间 */
   private timeout = 10000;
-  private retryDelay = 1000;
+  private retryDelay = 3000;
   private token?: string;
   private tokenEventName = 'getLoginInfo';
   constructor(params?: IParams) {
