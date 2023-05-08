@@ -82,7 +82,13 @@ class UniRequest {
       header?: RequestOptions['header'];
     } & RequestOptions,
   ): Promise<T> {
-    const url = `${this.baseUrl.replace(/\/$/, '')}/${params.url.replace(/^\//, '')}?t=${Date.now()}`;
+    let url = params.url;
+    /** 如果是http开头的，则不需要加入baseUrl */
+    if (!/^https?:\/\//.test(url)) {
+      url = `${this.baseUrl.replace(/\/$/, '')}/${params.url.replace(/^\//, '')}?t=${Date.now()}`;
+    } else {
+      url = `${params.url}?t=${Date.now()}`;
+    }
     const header = {
       ...this.header,
       ...params.header,
