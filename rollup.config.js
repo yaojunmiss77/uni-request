@@ -1,7 +1,6 @@
 import * as path from 'path';
 import typescript from 'rollup-plugin-typescript2';
 import resolve from '@rollup/plugin-node-resolve';
-import { terser } from 'rollup-plugin-terser';
 import dts from 'rollup-plugin-dts';
 import { eslint } from 'rollup-plugin-eslint';
 import commonjs from '@rollup/plugin-commonjs';
@@ -14,6 +13,7 @@ const { name } = require('./package.json');
 
 /**
  * 根据tsconfig获得alias配置参数
+ * 注意这里不要加压缩，为了防止条件编译被去除
  */
 function getTsConfigAlias() {
   const alias = {};
@@ -71,7 +71,6 @@ export default [
       }),
       resolve(['.js', '.ts', '.tsx']),
       commonjs(),
-      terser(),
     ].filter(Boolean),
     external: ['rxjs'],
   },
