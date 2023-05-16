@@ -35,8 +35,8 @@ export default [
   {
     input: `./src/index.ts`,
     output: {
-      file: path.join(`./dist/index.umd.mini.js`),
-      format: 'umd',
+      file: path.join(`./dist/index.esm.js`),
+      format: 'esm',
       exports: 'named',
       name: name.toUpperCase(),
     },
