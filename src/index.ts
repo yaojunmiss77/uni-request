@@ -15,6 +15,10 @@ export interface IParams {
   token?: string;
   /** 向APP得到token的event事件名称，默认getToken */
   tokenEventName?: string;
+  /** token的header名称，默认Authorization */
+  tokenHeader?: string;
+  /** 传入的token前缀，默认Bearer ，注意Bearer有个空字符串*/
+  tokenPrefix?: string;
 }
 
 function requestPromise(options?: RequestOptions & { timeout: number }): Promise<RequestSuccessCallbackResult> {
@@ -52,6 +56,10 @@ class UniRequest {
   private retryDelay = 3000;
   private token?: string;
   private tokenEventName = 'getToken';
+  /** token的header名称，默认Authorization */
+  private tokenHeader = 'Authorization';
+  /** 传入的token前缀，默认Bearer ，注意Bearer有个空字符串*/
+  private tokenPrefix = 'Bearer ';
   constructor(params?: IParams) {
     if (params) {
       Object.keys(params).forEach((key) => {
@@ -92,7 +100,7 @@ class UniRequest {
     const header = {
       ...this.header,
       ...params.header,
-      Authorization: `Bearer ${this.token}`,
+      [this.tokenHeader]: `${this.tokenPrefix}${this.token}`,
     };
     let requestedToken = false;
     let retryCount = 0;
