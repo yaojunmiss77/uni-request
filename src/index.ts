@@ -20,7 +20,7 @@ export interface IParams {
   /** 传入的token前缀，默认Bearer ，注意Bearer有个空字符串*/
   tokenPrefix?: string;
   /** 自定义得到token的函数，默认使用从客户端获取token的方式 */
-  getTokenFun: () => Promise<string>;
+  getTokenFun?: () => Promise<string>;
 }
 
 function requestPromise(options?: RequestOptions & { timeout: number }): Promise<RequestSuccessCallbackResult> {
