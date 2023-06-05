@@ -19,6 +19,8 @@ export interface IParams {
   tokenHeader?: string;
   /** 传入的token前缀，默认Bearer ，注意Bearer有个空字符串*/
   tokenPrefix?: string;
+  /** 自定义得到token的函数，默认使用从客户端获取token的方式 */
+  getTokenFun: () => Promise<string>;
 }
 
 function requestPromise(options?: RequestOptions & { timeout: number }): Promise<RequestSuccessCallbackResult> {
@@ -60,6 +62,9 @@ class UniRequest {
   private tokenHeader = 'Authorization';
   /** 传入的token前缀，默认Bearer ，注意Bearer有个空字符串*/
   private tokenPrefix = 'Bearer ';
+  /** 自定义得到token的函数 */
+  private getTokenFun?: () => Promise<string>;
+
   constructor(params?: IParams) {
     if (params) {
       Object.keys(params).forEach((key) => {
@@ -117,7 +122,7 @@ class UniRequest {
               }
             } else if (statusCode === 403 && !requestedToken) {
               // #ifndef H5
-              getToken(this.tokenEventName)
+              (this.getTokenFun ? this.getTokenFun() : getToken(this.tokenEventName))
                 .then((token: string) => {
                   this.token = token;
                   requestedToken = true;
