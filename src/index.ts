@@ -105,12 +105,13 @@ class UniRequest {
     const header = {
       ...this.header,
       ...params.header,
-      [this.tokenHeader]: `${this.tokenPrefix}${this.token}`,
     };
     let requestedToken = false;
     let retryCount = 0;
     return new Promise((res, rej) => {
       const retryFucntion = () => {
+        /** 因为token需要动态获取，因此放入这里 */
+        header[this.tokenHeader] = `${this.tokenPrefix}${this.token}`;
         requestPromise({ ...params, header, url, timeout: this.timeout })
           .then((resData) => {
             const { statusCode, data } = resData as any;
