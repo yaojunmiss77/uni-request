@@ -127,7 +127,8 @@ class UniRequest {
                 .then((token: string) => {
                   this.token = token;
                   requestedToken = true;
-                  delayRetryFcuntion();
+                  /** 获取token应该立马请求,不需要延迟 */
+                  retryFucntion();
                 })
                 .catch(() => {
                   if (this.maxRetryCount > retryCount) {
