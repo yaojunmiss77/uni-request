@@ -9,7 +9,7 @@ import json from '@rollup/plugin-json';
 import alias from 'rollup-plugin-alias';
 import babel from 'rollup-plugin-babel';
 const tsConfig = require('./tsconfig.json');
-const { name } = require('./package.json');
+const { buildOptions } = require('./package.json');
 
 /**
  * 根据tsconfig获得alias配置参数
@@ -31,49 +31,53 @@ function onwarn(msg, warn) {
 }
 const isProd = process.env.NODE_ENV === 'production';
 
-export default [
-  {
-    input: `./src/index.ts`,
-    output: {
-      file: path.join(`./dist/index.esm.js`),
-      format: 'esm',
-      exports: 'named',
-      name: name.toUpperCase(),
-    },
-    external: [],
-    inlineDynamicImports: false,
-    onwarn,
-    plugins: [
-      alias({
-        resolve: ['.js', '.ts', '.tsx'],
-        entries: getTsConfigAlias(),
-      }),
-      clean(),
-      json(),
-      typescript({
-        tsconfigOverride: {
-          declaration: false,
-          declarationDir: null,
-          emitDeclarationOnly: false,
-        },
-        useTsconfigDeclarationDir: true,
-        extensions: ['.js', '.ts', '.tsx'],
-      }),
-      babel({
-        runtimeHelpers: true,
-        extensions: ['.js', '.ts', '.tsx'],
-        exclude: 'node_modules/**',
-      }),
-      eslint({
-        throwOnError: false,
-        include: ['src/**/*.ts'],
-        exclude: ['node_modules/**', 'dist/**'],
-      }),
-      resolve(['.js', '.ts', '.tsx']),
-      commonjs(),
-    ].filter(Boolean),
-    external: ['rxjs'],
+const { name, formats } = buildOptions;
+
+const outputConfigs = formats.map((format) => ({
+  input: `./src/index.ts`,
+  output: {
+    file: path.join(`./dist/index.${format}.js`),
+    format,
+    exports: 'named',
+    name,
   },
+  external: [],
+  inlineDynamicImports: false,
+  onwarn,
+  plugins: [
+    alias({
+      resolve: ['.js', '.ts', '.tsx'],
+      entries: getTsConfigAlias(),
+    }),
+    clean(),
+    json(),
+    typescript({
+      tsconfigOverride: {
+        declaration: false,
+        declarationDir: null,
+        emitDeclarationOnly: false,
+      },
+      useTsconfigDeclarationDir: true,
+      extensions: ['.js', '.ts', '.tsx'],
+    }),
+    babel({
+      runtimeHelpers: true,
+      extensions: ['.js', '.ts', '.tsx'],
+      exclude: 'node_modules/**',
+    }),
+    eslint({
+      throwOnError: false,
+      include: ['src/**/*.ts'],
+      exclude: ['node_modules/**', 'dist/**'],
+    }),
+    resolve(['.js', '.ts', '.tsx']),
+    commonjs(),
+  ].filter(Boolean),
+  external: ['rxjs'],
+}));
+
+export default [
+  ...outputConfigs,
   {
     input: `./typings/src/index.d.ts`,
     output: {

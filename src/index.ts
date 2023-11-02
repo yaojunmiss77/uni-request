@@ -9,6 +9,8 @@ export interface IParams {
   maxRetryCount?: number;
   /** 请求超时时间默认10s，ms为单位 */
   timeout?: number;
+  /** 上传文件的请求超时时间，ms为单位 */
+  uploadTimeout?: number;
   /** 请求尝试延迟时间默认3s，ms为单位 */
   retryDelay?: number;
   /** token，APP初始化给到小程序的token */
@@ -26,6 +28,15 @@ export interface IParams {
 function requestPromise(options?: RequestOptions & { timeout: number }): Promise<RequestSuccessCallbackResult> {
   return new Promise((res, rej) => {
     uni.request({
+      ...options,
+      success: res,
+      fail: rej,
+    });
+  });
+}
+function uploadFilePromise(options?: UploadFileOption): Promise<UploadFileSuccessCallbackResult> {
+  return new Promise((res, rej) => {
+    uni.uploadFile({
       ...options,
       success: res,
       fail: rej,
@@ -55,6 +66,8 @@ class UniRequest {
   private maxRetryCount = 3;
   /** 超时时间 */
   private timeout = 10000;
+  /** 上传文件的超时时间 */
+  private uploadTimeout = 5000;
   private retryDelay = 3000;
   private token?: string;
   private tokenEventName = 'getToken';
@@ -93,7 +106,11 @@ class UniRequest {
       method: RequestOptions['method'];
       data?: RequestOptions['data'];
       header?: RequestOptions['header'];
-    } & RequestOptions,
+      /** 超时时间 */
+      timeout?: number;
+    } & RequestOptions &
+      UploadFileOption,
+    callbackPromise = requestPromise,
   ): Promise<T> {
     let url = params.url;
     /** 如果是http开头的，则不需要加入baseUrl */
@@ -112,7 +129,7 @@ class UniRequest {
       const retryFucntion = () => {
         /** 因为token需要动态获取，因此放入这里 */
         header[this.tokenHeader] = `${this.tokenPrefix}${this.token}`;
-        requestPromise({ ...params, header, url, timeout: this.timeout })
+        callbackPromise({ ...params, header, url, timeout: params.timeout || this.timeout })
           .then((resData) => {
             const { statusCode, data } = resData as any;
             if (statusCode === 200) {
@@ -184,6 +201,27 @@ class UniRequest {
   }
   public put<T>(url: string, data = {}, header?: Record<string, string>) {
     return this.request<T>({ url, data, header, method: 'PUT' });
+  }
+  /**
+   * 文件上传
+   * @param url 上传的url
+   * @param filePath 文件路径
+   * @param formData HTTP 请求中其他额外的 form data
+   * @param name 文件对应的 key , 开发者在服务器端通过这个 key 可以获取到文件二进制内容,默认key为file
+   * @param header
+   * @returns
+   */
+  public uploadFile<T>(
+    url: string,
+    filePath: string,
+    formData?: Record<string, any>,
+    name = 'file',
+    header?: Record<string, string>,
+  ) {
+    return this.request<T>(
+      { url, filePath, formData, name, header, timeout: this.uploadTimeout, method: 'PUT' },
+      uploadFilePromise,
+    );
   }
 }
 
