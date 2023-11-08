@@ -144,7 +144,6 @@ class UniRequest {
         // #endif
         callbackPromise({ ...params, header, url, timeout: params.timeout || this.timeout })
           .then((resData) => {
-            console.log(321312321,resData);
             const { statusCode, data } = resData as any;
             if (statusCode === 200) {
               if (!data.errno) {
@@ -153,7 +152,7 @@ class UniRequest {
                 this.rejectHandler(rej, resData);
               }
               /** 针对小网关进行的处理，历史遗留问题，需要兼容 */
-            } else if ('403' === statusCode && !requestedToken) {
+            } else if (403 === statusCode && !requestedToken) {
               // #ifndef H5
               (this.getTokenFun ? this.getTokenFun() : getToken(this.tokenEventName))
                 .then((token: string) => {
@@ -174,7 +173,7 @@ class UniRequest {
               this.rejectHandler(rej, resData);
               // #endif
               /** 最新无权限处理方案，直接调用客户端logout事件，退出到登录页 */
-            } else if ('401' === statusCode) {
+            } else if (401 === statusCode) {
               this.rejectHandler(rej, resData);
               uni.sendNativeEvent(EVENT_NAME.LOGOUT, {}, () => {
                 console.log('用户无权限，调用logout事件，退出到登录页');
