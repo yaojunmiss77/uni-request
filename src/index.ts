@@ -25,6 +25,11 @@ export interface IParams {
   getTokenFun?: () => Promise<string>;
 }
 
+/** 客户端交互内置事件名称 */
+const EVENT_NAME = {
+  LOGOUT: 'logout',
+};
+
 function requestPromise(options?: RequestOptions & { timeout: number }): Promise<RequestSuccessCallbackResult> {
   return new Promise((res, rej) => {
     uni.request({
@@ -146,7 +151,8 @@ class UniRequest {
               } else {
                 this.rejectHandler(rej, resData);
               }
-            } else if (statusCode === 403 && !requestedToken) {
+              /** 针对小网关进行的处理，历史遗留问题，需要兼容 */
+            } else if ('403' === statusCode && !requestedToken) {
               // #ifndef H5
               (this.getTokenFun ? this.getTokenFun() : getToken(this.tokenEventName))
                 .then((token: string) => {
@@ -166,6 +172,12 @@ class UniRequest {
               // #ifdef H5
               this.rejectHandler(rej, resData);
               // #endif
+              /** 最新无权限处理方案，直接调用客户端logout事件，退出到登录页 */
+            } else if ('401' === statusCode) {
+              this.rejectHandler(rej, resData);
+              uni.sendNativeEvent(EVENT_NAME.LOGOUT, {}, () => {
+                console.log('用户无权限，调用logout事件，退出到登录页');
+              });
             } else {
               if (this.maxRetryCount > retryCount) {
                 delayRetryFcuntion();
