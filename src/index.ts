@@ -144,6 +144,7 @@ class UniRequest {
         // #endif
         callbackPromise({ ...params, header, url, timeout: params.timeout || this.timeout })
           .then((resData) => {
+            console.log(321312321,resData);
             const { statusCode, data } = resData as any;
             if (statusCode === 200) {
               if (!data.errno) {
