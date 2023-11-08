@@ -1,6 +1,6 @@
 {
   "name": "uniapp-request-sdk",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "用于uniapp小程序的请求库的sdk",
   "main": "dist/index.umd.js",
   "module": " dist/index.esm.js",
