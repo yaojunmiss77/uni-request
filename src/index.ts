@@ -133,13 +133,11 @@ class UniRequest {
     return new Promise((res, rej) => {
       const retryFucntion = () => {
         /** 因为token需要动态获取，因此放入这里 */
-        // #ifndef H5
         header[this.tokenHeader] = `${this.tokenPrefix}${this.token}`;
-        // #endif
         /** 针对h5调试的时候，因为塞入cookie是不安全的，因此无需塞入cookie，使用登录页后，后端塞入的cookie */
         // #ifdef H5
-        if (!['cookie'].includes(this.tokenHeader)) {
-          header[this.tokenHeader] = `${this.tokenPrefix}${this.token}`;
+        if (this.tokenHeader === 'cookie') {
+          delete header[this.tokenHeader];
         }
         // #endif
         callbackPromise({ ...params, header, url, timeout: params.timeout || this.timeout })
