@@ -9,7 +9,7 @@ export interface IParams {
   maxRetryCount?: number;
   /** 请求超时时间默认10s，ms为单位 */
   timeout?: number;
-  /** 上传文件的请求超时时间，ms为单位 */
+  /** 上传文件的请求超时时间，ms为单位，默认5s */
   uploadTimeout?: number;
   /** 请求尝试延迟时间默认3s，ms为单位 */
   retryDelay?: number;
