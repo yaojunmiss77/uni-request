@@ -27,6 +27,7 @@ export interface IParams {
 
 /** 客户端交互内置事件名称 */
 const EVENT_NAME = {
+  /** 通知APP退出到登录页面 */
   LOGOUT: 'logout',
 };
 
